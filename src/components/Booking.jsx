@@ -66,7 +66,7 @@ export default function BookingArea() {
 
     const distance = getDistanceFromLatLonInKm(lat1, lng1, lat2, lng2);
     setDistanceKm(distance.toFixed(2));
-   
+
   };
 
   const getDistanceFromLatLonInKm = (lat1, lon1, lat2, lon2) => {
@@ -114,9 +114,9 @@ export default function BookingArea() {
     setBookingData({
       form: {
         locations: [fromInputRef.current.value, toInputRef.current.value],
-       
+
       },
-     
+
       distance: distanceKm,
       taxis: dynamicTaxis
     });
