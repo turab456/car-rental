@@ -32,7 +32,6 @@ export default function Login() {
     if (response?.token) {
       // Example: Store token or redirect
       localStorage.setItem('token', response.token);
-      console.log('User logged in successfully');
     }
   };
 

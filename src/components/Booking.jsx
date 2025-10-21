@@ -11,11 +11,8 @@ export default function BookingArea() {
   const fromInputRef = useRef(null);
   const toInputRef = useRef(null);
   const [distanceKm, setDistanceKm] = useState(null);
-  const [pickupCity, setPickupCity] = useState("");
-  const [dropoffCity, setDropoffCity] = useState("");
   const router = useRouter();
   const { setBookingData } = useBooking();
-console.log(pickupCity,dropoffCity)
 
   useEffect(() => {
     if (typeof window !== "undefined" && !window.google) {

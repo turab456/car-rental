@@ -7,7 +7,6 @@ import { useBooking } from "../../context/BookingContext";
 export default function TaxiList() {
     const { bookingData } = useBooking();
 
-    console.log(bookingData)
     return (
         <section className="taxi-list">
             <div className="container">
