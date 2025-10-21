@@ -5407,6 +5407,63 @@ body.rtl-mode .price-wrapper {
     z-index: -1;
 }
 
+/* Add these styles for the login form */
+.login-form {
+  background: #fff;
+  padding: 40px;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.login-header h3 {
+  margin: 20px 0 10px;
+}
+
+.social-login {
+  text-align: center;
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #eee;
+}
+
+.social-login-list {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.social-login-list a {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: #fff;
+  transition: all 0.3s ease;
+}
+
+.social-login-list .facebook {
+  background: #3b5998;
+}
+
+.social-login-list .google {
+  background: #db4437;
+}
+
+.social-login-list .twitter {
+  background: #1da1f2;
+}
+
+
+
+
 @media all and (max-width: 991px) {
     .home-3 .hero-single {
         padding-top: 220px;

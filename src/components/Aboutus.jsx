@@ -1,7 +1,7 @@
 "use client";
 import Image from 'next/image';
 import React from 'react'
-import AboutusImage from "@/assets/about/about.png"
+import AboutusImage from "..//assets/about/about.png"
 import dynamic from "next/dynamic";
 import { useEffect, useRef } from "react";
 import $ from "jquery";

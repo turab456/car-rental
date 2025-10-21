@@ -1,61 +1,58 @@
 "use client";
-import "../styles/animate.min.css";
-import "../styles/style.css";
-const counters = [
-  {
-    img: "assets/img/icon/taxi-1.svg",
-    value: 500,
-    suffix: "+",
-    title: "Available Taxi",
-  },
-  {
-    img: "assets/img/icon/happy.svg",
-    value: 900,
-    suffix: "+",
-    title: "Happy Clients",
-  },
-  {
-    img: "assets/img/icon/driver.svg",
-    value: 700,
-    suffix: "+",
-    title: "Our Drivers",
-  },
-  {
-    img: "assets/img/icon/trip.svg",
-    value: 1800,
-    suffix: "+",
-    title: "Road Trip Done",
-  },
-];
+import slider1 from "../assets/slider/slider-1.jpg";
+import taxibookingicon from "../assets/icon/taxi-booking.svg"
+import Image from "next/image";
 
 export default function CounterArea() {
   return (
     <div className="counter-area">
       <div className="container">
-        <div className="counter-wrapper">
+        <div className="counter-wrapper mb-0" style={{ backgroundImage: `url(${slider1.src})` }}>
           <div className="row">
-            {counters.map((item, index) => (
-              <div className="col-lg-3 col-sm-6" key={index}>
-                <div className="counter-box">
-                  <div className="icon">
-                    <img src={item.img} alt={item.title} />
-                  </div>
-                  <div>
-                    <span
-                      className="counter"
-                      data-count={item.suffix}
-                      data-to={item.value}
-                      data-speed="3000"
-                    >
-                      {item.value}
-                    </span>
-                    <h6 className="title">
-                      {item.suffix} {item.title}
-                    </h6>
-                  </div>
+            <div className="col-lg-3 col-sm-6">
+              <div className="counter-box">
+                <div className="icon">
+                 <Image src={taxibookingicon}/>
+                </div>
+                <div>
+                  <span className="counter" data-count="+" data-to="500" data-speed="3000">500</span>
+                  <h6 className="title">+ Available Taxi </h6>
                 </div>
               </div>
-            ))}
+            </div>
+            <div className="col-lg-3 col-sm-6">
+              <div className="counter-box">
+                <div className="icon">
+                 <Image src={taxibookingicon}/>
+                </div>
+                <div>
+                  <span className="counter" data-count="+" data-to="900" data-speed="3000">900</span>
+                  <h6 className="title">+ Happy Clients</h6>
+                </div>
+              </div>
+            </div>
+            <div className="col-lg-3 col-sm-6">
+              <div className="counter-box">
+                <div className="icon">
+                 <Image src={taxibookingicon}/>
+                </div>
+                <div>
+                  <span className="counter" data-count="+" data-to="700" data-speed="3000">700</span>
+                  <h6 className="title">+ Our Drivers</h6>
+                </div>
+              </div>
+            </div>
+            <div className="col-lg-3 col-sm-6">
+              <div className="counter-box">
+                <div className="icon">
+                 <Image src={taxibookingicon}/>
+                </div>
+                <div>
+                  <span className="counter" data-count="+" data-to="1800" data-speed="3000">1800</span>
+                  <h6 className="title">+ Road Trip Done</h6>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

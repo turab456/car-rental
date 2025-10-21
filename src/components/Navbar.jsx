@@ -84,14 +84,11 @@ export default function Header() {
             <div className="collapse navbar-collapse" id="main_nav">
               <ul className="navbar-nav">
                 <li className="nav-item dropdown">
-                  <Link className="nav-link dropdown-toggle active" href="#" data-bs-toggle="dropdown">
+                  <Link className="nav-link active" href="/home" >
+                  {/* <Link className="nav-link dropdown-toggle active" href="/home" > */}
                     Home
                   </Link>
-                  <ul className="dropdown-menu fade-down">
-                    <li><Link className="dropdown-item" href="/index">Home Page 01</Link></li>
-                    <li><Link className="dropdown-item" href="/index-2">Home Page 02</Link></li>
-                    <li><Link className="dropdown-item" href="/index-3">Home Page 03</Link></li>
-                  </ul>
+                  
                 </li>
 
                 <li className="nav-item"><Link className="nav-link" href="/about">About</Link></li>
@@ -100,78 +97,28 @@ export default function Header() {
                   <Link className="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
                     Taxi
                   </Link>
-                  <ul className="dropdown-menu fade-down">
-                    <li><Link className="dropdown-item" href="/taxi">Taxi</Link></li>
-                    <li><Link className="dropdown-item" href="/taxi-single">Taxi Single</Link></li>
-                  </ul>
+                 
                 </li>
 
                 <li className="nav-item dropdown">
                   <Link className="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
                     Service
                   </Link>
-                  <ul className="dropdown-menu fade-down">
-                    <li><Link className="dropdown-item" href="/service">Service</Link></li>
-                    <li><Link className="dropdown-item" href="/service-single">Service Single</Link></li>
-                  </ul>
+                 
                 </li>
 
                 <li className="nav-item dropdown">
                   <Link className="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
                     Pages
                   </Link>
-                  <ul className="dropdown-menu fade-down">
-                    <li><Link className="dropdown-item" href="/about">About Us</Link></li>
-
-                    <li className="dropdown-submenu">
-                      <Link className="dropdown-item dropdown-toggle" href="#">My Account</Link>
-                      <ul className="dropdown-menu">
-                        <li><Link className="dropdown-item" href="/dashboard">Dashboard</Link></li>
-                        <li><Link className="dropdown-item" href="/profile">My Profile</Link></li>
-                        <li><Link className="dropdown-item" href="/profile-booking">My Booking</Link></li>
-                        <li><Link className="dropdown-item" href="/profile-cancel-booking">Cancel Booking</Link></li>
-                        <li><Link className="dropdown-item" href="/profile-payment">Payment History</Link></li>
-                        <li><Link className="dropdown-item" href="/profile-setting">Settings</Link></li>
-                      </ul>
-                    </li>
-
-                    <li className="dropdown-submenu">
-                      <Link className="dropdown-item dropdown-toggle" href="#">Authentication</Link>
-                      <ul className="dropdown-menu">
-                        <li><Link className="dropdown-item" href="/login">Login</Link></li>
-                        <li><Link className="dropdown-item" href="/register">Register</Link></li>
-                        <li><Link className="dropdown-item" href="/forgot-password">Forgot Password</Link></li>
-                      </ul>
-                    </li>
-
-                    <li className="dropdown-submenu">
-                      <Link className="dropdown-item dropdown-toggle" href="#">Driver</Link>
-                      <ul className="dropdown-menu">
-                        <li><Link className="dropdown-item" href="/driver">Driver</Link></li>
-                        <li><Link className="dropdown-item" href="/driver-single">Driver Single</Link></li>
-                      </ul>
-                    </li>
-
-                    <li><Link className="dropdown-item" href="/team">Our Team</Link></li>
-                    <li><Link className="dropdown-item" href="/book-ride">Book A Ride</Link></li>
-                    <li><Link className="dropdown-item" href="/taxi-rate">Our Taxi Rate</Link></li>
-                    <li><Link className="dropdown-item" href="/faq">Faq</Link></li>
-                    <li><Link className="dropdown-item" href="/testimonial">Testimonials</Link></li>
-                    <li><Link className="dropdown-item" href="/404">404 Error</Link></li>
-                    <li><Link className="dropdown-item" href="/coming-soon">Coming Soon</Link></li>
-                    <li><Link className="dropdown-item" href="/terms">Terms Of Service</Link></li>
-                    <li><Link className="dropdown-item" href="/privacy">Privacy Policy</Link></li>
-                  </ul>
+                 
                 </li>
 
                 <li className="nav-item dropdown">
                   <Link className="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
                     Blog
                   </Link>
-                  <ul className="dropdown-menu fade-down">
-                    <li><Link className="dropdown-item" href="/blog">Blog</Link></li>
-                    <li><Link className="dropdown-item" href="/blog-single">Blog Single</Link></li>
-                  </ul>
+                  
                 </li>
 
                 <li className="nav-item">

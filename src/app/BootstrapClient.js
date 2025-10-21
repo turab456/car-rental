@@ -1,10 +1,12 @@
-"use client";
-import { useEffect } from "react";
-import "bootstrap/dist/js/bootstrap.bundle.min.js";
+'use client';
+import { useEffect } from 'react';
 
 export default function BootstrapClient() {
   useEffect(() => {
-    import("bootstrap/dist/js/bootstrap.bundle.min.js"); // ✅ loads only in browser
+    // Only import Bootstrap JavaScript on the client side
+    if (typeof window !== 'undefined') {
+      require('bootstrap/dist/js/bootstrap.bundle.min.js');
+    }
   }, []);
 
   return null;

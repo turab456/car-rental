@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import img from "../assets/faq/faq.jpg"
 import OwlCarousel from "react-owl-carousel";
