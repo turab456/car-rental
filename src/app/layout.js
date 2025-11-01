@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "bootstrap/dist/css/bootstrap.min.css";
 import BootstrapClient from "./BootstrapClient";
 import "@fortawesome/fontawesome-free/css/all.min.css";
+import "react-datepicker/dist/react-datepicker.css";
+
 import "../styles/style.css";
 import "./globals.css";
 import Schema from "./components/Schema";
@@ -54,11 +56,11 @@ export default function RootLayout({ children }) {
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <BookingProvider>
 
-        <Schema/>
-        <BootstrapClient />
-        <NavigationWrapper>
-          {children}
-        </NavigationWrapper>
+          <Schema />
+          <BootstrapClient />
+          <NavigationWrapper>
+            {children}
+          </NavigationWrapper>
         </BookingProvider>
       </body>
     </html>

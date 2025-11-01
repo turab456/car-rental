@@ -1791,6 +1791,38 @@ label {
     }
 }
 
+
+/* Inline OTP send button inside input */
+.otp-inline-btn {
+    position: absolute;
+    right: 10px;
+    top: 70%;
+    transform: translateY(-50%);
+    background: white;
+    color: var(--theme-color);
+    border: none;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.otp-inline-btn:hover {
+    background: var(--theme-hover-color);
+}
+
+.otp-inline-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Add some padding-right to the input to avoid overlap */
+.form-control.pe-5 {
+    padding-right: 90px !important;
+}
+
+
 /* ===================
 21. Date picker css 
 ====================== */
@@ -5409,58 +5441,103 @@ body.rtl-mode .price-wrapper {
 
 /* Add these styles for the login form */
 .login-form {
-  background: #fff;
-  padding: 40px;
-  border-radius: 10px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    background: #fff;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
 }
 
 .login-header {
-  text-align: center;
-  margin-bottom: 30px;
+    text-align: center;
+    margin-bottom: 30px;
 }
 
 .login-header h3 {
-  margin: 20px 0 10px;
+    margin: 20px 0 10px;
 }
 
 .social-login {
-  text-align: center;
-  margin-top: 30px;
-  padding-top: 20px;
-  border-top: 1px solid #eee;
+    text-align: center;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
 }
 
 .social-login-list {
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-  margin-top: 15px;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 15px;
 }
 
 .social-login-list a {
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  color: #fff;
-  transition: all 0.3s ease;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    color: #fff;
+    transition: all 0.3s ease;
 }
 
 .social-login-list .facebook {
-  background: #3b5998;
+    background: #3b5998;
 }
 
 .social-login-list .google {
-  background: #db4437;
+    background: #db4437;
 }
 
 .social-login-list .twitter {
-  background: #1da1f2;
+    background: #1da1f2;
 }
 
+/* .trip-picker {
+  display: flex;
+  gap: 40px;
+}
+
+.trip-section h3 {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.time-selector {
+  margin-top: 10px;
+}
+
+.ampm-toggle button {
+  padding: 5px 10px;
+  margin-right: 5px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.ampm-toggle .active {
+  background-color: #f0b500;
+  color: #fff;
+}
+
+.time-slots {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 10px;
+  gap: 5px;
+}
+
+.time-slots button {
+  padding: 5px 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.time-slots button.selected {
+  background-color: #f0b500;
+  color: #fff;
+} */
 
 
 

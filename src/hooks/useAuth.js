@@ -3,11 +3,12 @@ import { registerUser, loginUser } from "../features/auth/authServices";
 
 export const useAuth = () => {
   const [loading, setLoading] = useState(false);
+  const [otpLoading, setotpLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
 
   const handleRegister = async (formData) => {
-    setLoading(true);
+    setotpLoading(true);
     setErrorMsg("");
     setSuccessMsg("");
     try {
@@ -23,7 +24,7 @@ export const useAuth = () => {
     } catch (err) {
       setErrorMsg(err.response?.data?.message || "Something went wrong.");
     } finally {
-      setLoading(false);
+      setotpLoading(false);
     }
   };
 
@@ -46,5 +47,5 @@ export const useAuth = () => {
     }
   };
 
-  return { loading, errorMsg, successMsg, handleRegister, handleLogin };
+  return { loading, errorMsg, successMsg,otpLoading, handleRegister, handleLogin };
 };

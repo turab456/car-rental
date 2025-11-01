@@ -1,12 +1,17 @@
 "use client";
 
-const Tab = ({text}) => {
+const Tab = ({ text }) => {
   return (
     <div className="d-flex  mt-4">
-      <button 
-        type="button" 
+      <button
+        type="button"
         className="theme-btn"
-        // style={{ minWidth: "250px", fontWeight: "500", fontSize: "16px" }}
+        style={{
+          paddingTop: "10px",
+          paddingBottom: "10px",
+          paddingLeft: "10px",
+          paddingRight: "10px",
+        }}
       >
         {text}
       </button>
