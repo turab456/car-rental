@@ -10,6 +10,7 @@ import "./globals.css";
 import Schema from "./components/Schema";
 import NavigationWrapper from "../components/NavigationWrapper";
 import { BookingProvider } from "../context/BookingContext";
+import { Providers } from "./providers";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -54,14 +55,16 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <BookingProvider>
+        <Providers>
+          <BookingProvider>
 
-          <Schema />
-          <BootstrapClient />
-          <NavigationWrapper>
-            {children}
-          </NavigationWrapper>
-        </BookingProvider>
+            <Schema />
+            <BootstrapClient />
+            <NavigationWrapper>
+              {children}
+            </NavigationWrapper>
+          </BookingProvider>
+        </Providers>
       </body>
     </html>
   );

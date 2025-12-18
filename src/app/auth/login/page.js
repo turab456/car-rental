@@ -5,8 +5,11 @@ import Image from 'next/image';
 import { useAuth } from '../../../hooks/useAuth';
 import Cookies from 'js-cookie';
 import api from '../../../services/api';
+import { useRouter } from "next/navigation";
 
 export default function Login() {
+  const router = useRouter();
+
   const [formData, setFormData] = useState({
     phoneNumber: '',
     phoneOTP: '',
@@ -35,9 +38,9 @@ export default function Login() {
     const response = await handleLogin(formData);
     if (response?.data?.accessToken) {
       Cookies.set('accessToken', response.data.accessToken, { path: '/' });
-      alert('Token set successfully!');
+      router.push('/home')
     }
-    if(response?.data?.id && response?.data?.phoneNumber){
+    if (response?.data?.id && response?.data?.phoneNumber) {
       await localStorage.setItem('userData', JSON.stringify({
         id: response.data.id,
         phoneNumber: response.data.phoneNumber

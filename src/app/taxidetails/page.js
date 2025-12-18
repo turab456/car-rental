@@ -15,11 +15,10 @@ export default function TaxiList() {
     const [returnDate, setReturnDate] = useState(new Date(2025, 9, 27, 23, 59));
     const locations = bookingData?.form?.locations || [];
     const tripType = bookingData?.form?.tripType;
-
     // ✅ Prepare route tabs dynamically
     let displayLocations = [];
 
-    if (tripType === "roundtrip" && locations.length === 2) {
+    if (tripType === "Round Trip" && locations.length === 2) {
         // From → To → From
         displayLocations = [locations[0], locations[1], locations[0]];
     } else {
@@ -42,7 +41,8 @@ export default function TaxiList() {
         const updatedBooking = { ...bookingInfo };
 
         if (bookingInfo.pickUpDate) {
-            updatedBooking.pickUpTime = formatTime(bookingInfo.pickUpDate);
+
+            updatedBooking.pickUpTime = bookingInfo.pickUpDate;
             updatedBooking.pickUpDate = formatDate(bookingInfo.pickUpDate);
         }
 
@@ -53,8 +53,6 @@ export default function TaxiList() {
 
         return updatedBooking;
     };
-
-
     const handleBookNow = async (taxi) => {
         // 🗓️ Format current date as DD/MM/YYYY
         const createdDate = new Date()
@@ -66,30 +64,30 @@ export default function TaxiList() {
         const uniqueLeadName = `CB${randomString}`;
 
         const bookingInfo = {
-            collectionName: "leads",
-            phoneNumber: bookingData.form.phoneNumber,
-            userId: userData?.id,
+            // collectionName: "leads",
+            // phoneNumber: bookingData.form.phoneNumber,
+            // userId: userData?.id,
             tripType: bookingData?.form?.tripType,
             locations: bookingData?.form?.locations,
-            totalKm: taxi.features[0].value,
-            totalAmount: taxi.price,
+            totalKm: Number(taxi.features[0].value.replace(/[^0-9.]/g, "")),
+            totalAmount: Number(taxi.price.replace(/[^0-9.]/g, "")),
             vehicleType: taxi.title,
             pickUpDate: departure,
             pickUpTime: userData?.phoneNumber,
-            returnDate: returnDate,
-            userCity: "",
+            // returnDate: returnDate,
+            userCity: "Bangalore",
 
             // 🆕 Additional fields
-            leadStatus: "NEW-LEAD",
-            createdDate,
-            uniqueLeadName,
-            adminSeen: false,
+            // leadStatus: "NEW-LEAD",
+            // createdDate,
+            // uniqueLeadName,
+            // adminSeen: false,
         };
 
         const result = transformBookingTimes(bookingInfo);
 
         try {
-            const response = await axiosInstance.post("/factory/create", result);
+            const response = await axiosInstance.post("/lead/create", result);
             if (response) {
                 alert("Booking successful!");
             }

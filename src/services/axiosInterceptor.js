@@ -3,7 +3,7 @@ import axios from "axios";
 import Cookies from "js-cookie"; // works in browser only
 
 const axiosInstance = axios.create({
-  baseURL: "https://backend-dynamic-code-2iet.onrender.com" || "https://api.example.com",
+  baseURL: "https://cabbajar-backend.kanlifegroup.com",
   headers: {
     "Content-Type": "application/json",
   },
