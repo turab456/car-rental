@@ -11,6 +11,7 @@ import Schema from "./components/Schema";
 import NavigationWrapper from "../components/NavigationWrapper";
 import { BookingProvider } from "../context/BookingContext";
 import { Providers } from "./providers";
+import { Toaster } from "react-hot-toast";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -62,6 +63,15 @@ export default function RootLayout({ children }) {
             <BootstrapClient />
             <NavigationWrapper>
               {children}
+               <Toaster
+          position="top-center"
+          toastOptions={{
+            duration: 3000,
+            style: {
+              fontSize: "14px",
+            },
+          }}
+        />
             </NavigationWrapper>
           </BookingProvider>
         </Providers>

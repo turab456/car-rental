@@ -6,7 +6,7 @@ import Taxi from "../assets/taxi/01.png";
         {
             categories: ["hatchback", "ac", "4-seater"],
             img: Taxi,
-            title: "Swift, WagonR or Similar",
+            title: "SUV",
             price: "₹3450.1",
             features: [
                 { icon: "fas fa-road", label: "Included Km", value: "289 Km" },
@@ -19,7 +19,7 @@ import Taxi from "../assets/taxi/01.png";
         {
             categories: ["sedan", "ac", "4-seater"],
             img: Taxi,
-            title: "Dzire, Etios or Similar",
+            title: "SUV",
             price: "₹3479",
             features: [
                 { icon: "fas fa-road", label: "Included Km", value: "289 Km" },
@@ -32,7 +32,7 @@ import Taxi from "../assets/taxi/01.png";
         {
             categories: ["suv", "ac", "6-seater"],
             img: Taxi,
-            title: "Innova, Ertiga, Marazzo or Similar",
+            title: "SUV",
             price: "₹4779.5",
             features: [
                 { icon: "fas fa-road", label: "Included Km", value: "289 Km" },

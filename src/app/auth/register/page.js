@@ -14,7 +14,7 @@ export default function Register() {
     agreeToTerms: false
   });
 
-  const { loading, errorMsg, successMsg, handleRegister } = useAuth();
+  const { loading, errorMsg, successMsg, handleRegister } = useAuth()||{};
 
 
   const handleChange = (e) => {

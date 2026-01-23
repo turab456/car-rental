@@ -9,28 +9,73 @@ import { useBooking } from "../context/BookingContext";
 import { useAuthenticate } from "../hooks/useAuthenticate";
 import { useAuth } from "../hooks/useAuth";
 import Cookies from "js-cookie";
+import toast from "react-hot-toast";
+
 export default function BookingArea() {
-  const user = typeof window !== "undefined" ? localStorage.getItem("userData") : null;
+  const user =
+    typeof window !== "undefined" ? localStorage.getItem("userData") : null;
   const router = useRouter();
   const { setBookingData } = useBooking();
   const { isAuthenticated } = useAuthenticate();
-  const { handleRegister, handleLogin } = useAuth();
+  const { handleRegister, handleLogin, errorMsg, successMsg } = useAuth()||{};
 
   const fromInputRef = useRef(null);
   const toInputRef = useRef(null);
+  const otpRefs = useRef([]);
+
   const [distanceKm, setDistanceKm] = useState(null);
   const [tripType, setTripType] = useState("One Way");
   const [extraCities, setExtraCities] = useState([]);
-  const [phoneNumber, setPhoneNumber] = useState(user ? JSON.parse(user).phoneNumber : "");
-  const [otp, setOtp] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState(
+    user ? JSON.parse(user).phoneNumber : ""
+  );
+  const [otp, setOtp] = useState(["", "", "", "", ""]);
   const [otpSent, setOtpSent] = useState(false);
   const [otpVerified, setOtpVerified] = useState(false);
   const [isFromFilled, setIsFromFilled] = useState(false);
   const [isToFilled, setIsToFilled] = useState(false);
+  const [resendTimer, setResendTimer] = useState(30);
+  const [canResend, setCanResend] = useState(false);
 
-  const otpRefs = useRef([]);
+  const handleOtpChange = (e, idx) => {
+    const val = e.target.value.replace(/\D/g, "").slice(-1);
+    const nextOtp = [...otp];
+    nextOtp[idx] = val;
+    setOtp(nextOtp);
 
-  // --- Google & jQuery ---
+    if (val && idx < 4) {
+      otpRefs.current[idx + 1]?.focus();
+    }
+  };
+
+  const handleOtpKeyDown = (e, idx) => {
+    if (e.key === "Backspace") {
+      if (otp[idx]) {
+        const nextOtp = [...otp];
+        nextOtp[idx] = "";
+        setOtp(nextOtp);
+      } else if (idx > 0) {
+        otpRefs.current[idx - 1]?.focus();
+      }
+    }
+  };
+
+  const handleOtpPaste = (e) => {
+    const paste = (e.clipboardData || window.clipboardData).getData("text");
+    const digits = paste.replace(/\D/g, "").slice(0, 4).split("");
+
+    if (digits.length) {
+      const nextOtp = ["", "", "", "", ""];
+      digits.forEach((d, i) => (nextOtp[i] = d));
+      setOtp(nextOtp);
+
+      const focusIndex = Math.min(digits.length, 5) - 1;
+      otpRefs.current[focusIndex]?.focus();
+    }
+    e.preventDefault();
+  };
+
+  // Google Maps & jQuery initialization
   useEffect(() => {
     if (typeof window !== "undefined" && !window.google) {
       const script = document.createElement("script");
@@ -56,6 +101,7 @@ export default function BookingArea() {
 
   const initAutocomplete = () => {
     if (!window.google) return;
+
     const createAutocomplete = (inputRef, onPlaceChange) => {
       const autocomplete = new window.google.maps.places.Autocomplete(inputRef);
       autocomplete.addListener("place_changed", () => {
@@ -84,7 +130,7 @@ export default function BookingArea() {
     }
 
     extraCities.forEach((city) => {
-      if (city.ref) createAutocomplete(city.ref, () => { });
+      if (city.ref) createAutocomplete(city.ref, () => {});
     });
   };
 
@@ -97,6 +143,8 @@ export default function BookingArea() {
     setDistanceKm(distance.toFixed(2));
   };
 
+  const deg2rad = (deg) => deg * (Math.PI / 180);
+
   const getDistanceFromLatLonInKm = (lat1, lon1, lat2, lon2) => {
     const R = 6371;
     const dLat = deg2rad(lat2 - lat1);
@@ -104,150 +152,103 @@ export default function BookingArea() {
     const a =
       Math.sin(dLat / 2) ** 2 +
       Math.cos(deg2rad(lat1)) *
-      Math.cos(deg2rad(lat2)) *
-      Math.sin(dLon / 2) ** 2;
+        Math.cos(deg2rad(lat2)) *
+        Math.sin(dLon / 2) ** 2;
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return R * c;
   };
-  const deg2rad = (deg) => deg * (Math.PI / 180);
 
   const handleAddCity = () => {
-    setExtraCities(prev => [
+    setExtraCities((prev) => [
       ...prev,
-      { id: prev.length + 1, ref: null, autocompleteAttached: false }
+      { id: prev.length + 1, ref: null, autocompleteAttached: false },
     ]);
   };
-  // --- OTP Logic ---
-  // const handleSendOtp = () => {
-  //   if (!phoneNumber) return alert("Enter your phone number first.");
-  //   setOtpSent(true);
-  //   handleRegister({ phoneNumber });
-  // };
-
-
 
   const handleVerifyOtp = async () => {
-    const formData = { phoneNumber, phoneOTP: otp };
+    const otpCode = Array.isArray(otp) ? otp.join("") : otp;
+    if (otpCode.length < 5) return;
 
+    const formData = { phoneNumber, phoneOTP: otpCode };
     const response = await handleLogin(formData);
+
     if (response?.data?.accessToken) {
-      Cookies.set('accessToken', response.data.accessToken, { path: '/' });
-      alert('Token set successfully!');
+      Cookies.set("accessToken", response.data.accessToken, { path: "/" });
+      alert("Token set successfully!");
     }
+
     if (response?.data?.id && response?.data?.phoneNumber) {
-      await localStorage.setItem('userData', JSON.stringify({
-        id: response.data.id,
-        phoneNumber: response.data.phoneNumber
-      }));
-    } setOtpVerified(true);
-    alert("OTP verified successfully!");
+      await localStorage.setItem(
+        "userData",
+        JSON.stringify({
+          id: response.data.id,
+          phoneNumber: response.data.phoneNumber,
+        })
+      );
+    }
+
+    setOtpVerified(true);
+    toast.success(successMsg || "OTP verified successfully!");
   };
 
-  // --- Booking ---
-  // const handleSubmit = (e) => {
-  //   console.log("step 1");
-  //   if (!isAuthenticated) {
-  //     alert("Please log in to book a taxi.");
-  //     setOtpSent(true);
-
-  //   }
-  //   e.preventDefault();
-  //   if (!distanceKm) {
-  //     alert("Please select both pickup and drop-off locations.");
-  //     return;
-  //   }
-
-  //   if (!isAuthenticated && !otpVerified) {
-  //     alert("Please verify your OTP before booking.");
-  //     return;
-  //   }
-
-  //   const from = fromInputRef.current?.value || "";
-  //   const to = toInputRef.current?.value || "";
-  //   const cities = extraCities
-  //     .map((city) => city.ref?.value?.trim())
-  //     .filter((v) => v);
-
-  //   let locations = [];
-  //   if (tripType === "One Way") {
-  //     locations = cities.length === 0 ? [from, to] : [from, ...cities, to, from];
-  //   } else if (tripType === "Round Trip") {
-  //     locations = cities.length === 0 ? [from, to, from] : [from, ...cities, to, from];
-  //   }
-
-  //   const dynamicTaxis = originalTaxiData.map((taxi) => {
-  //     const extraKm = Math.max(distanceKm - parseFloat(taxi.features[0].value), 0);
-  //     const extraFarePerKm = parseFloat(
-  //       taxi.features[1].value.replace(/[^0-9.]/g, "")
-  //     );
-  //     const basePrice = parseFloat(taxi.price.replace(/[^0-9.]/g, ""));
-  //     const newPrice = basePrice + extraKm * extraFarePerKm;
-  //     return {
-  //       ...taxi,
-  //       features: [
-  //         { ...taxi.features[0], value: `${distanceKm} Km` },
-  //         taxi.features[1],
-  //         taxi.features[2],
-  //         taxi.features[3],
-  //         taxi.features[4],
-  //       ],
-  //       price: `₹${newPrice.toFixed(2)}`,
-  //     };
-  //   });
-
-  //   setBookingData({
-  //     form: { locations, tripType, phoneNumber },
-  //     distance: distanceKm,
-  //     taxis: dynamicTaxis,
-  //   });
-
-  //   router.push("/taxidetails");
-  // };
+  // Auto-trigger verify when 5 digits present
+  useEffect(() => {
+    const otpCode = Array.isArray(otp) ? otp.join("") : otp;
+    if (otpSent && otpCode.length === 5 && !otpVerified) {
+      handleVerifyOtp();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [otp]);
 
   const handleSubmit = (e) => {
-    e.preventDefault(); // MUST be first
-
+    e.preventDefault();
     console.log("step 1");
 
-    // 🚨 AUTH CHECK — OTP OPENS ONLY HERE
     if (!isAuthenticated && !otpVerified) {
       if (!phoneNumber) {
-        alert("Please enter your phone number.");
+        toast.error(errorMsg || "Enter your phone number first.");
         return;
       }
 
-      setOtpSent(true); // ✅ OTP BOX OPENS ONLY ON SUBMIT
+      setOtpSent(true);
       handleRegister({ phoneNumber });
-      alert("Please verify OTP to continue booking.");
+      toast.success(successMsg || "OTP sent to your mobile number");
       return;
     }
 
     if (!distanceKm) {
-      alert("Please select both pickup and drop-off locations.");
+      toast.error(errorMsg || "Please select valid From and To locations.");
       return;
     }
 
     const from = fromInputRef.current?.value || "";
     const to = toInputRef.current?.value || "";
-
     const cities = extraCities
       .map((city) => city.ref?.value?.trim())
       .filter((v) => v);
 
     let locations = [];
     if (tripType === "One Way") {
-      locations = cities.length === 0 ? [from, to] : [from, ...cities, to, from];
+      locations =
+        cities.length === 0 ? [from, to] : [from, ...cities, to, from];
     } else if (tripType === "Round Trip") {
-      locations = cities.length === 0 ? [from, to, from] : [from, ...cities, to, from];
+      locations =
+        cities.length === 0 ? [from, to, from] : [from, ...cities, to, from];
     }
 
     const dynamicTaxis = originalTaxiData.map((taxi) => {
-      const extraKm = Math.max(distanceKm - parseFloat(taxi.features[0].value), 0);
+      const extraKm = Math.max(
+        distanceKm - parseFloat(taxi.features[0].value),
+        0
+      );
       const extraFarePerKm = parseFloat(
         taxi.features[1].value.replace(/[^0-9.]/g, "")
       );
       const basePrice = parseFloat(taxi.price.replace(/[^0-9.]/g, ""));
       const newPrice = basePrice + extraKm * extraFarePerKm;
+      console.log("newPrice", newPrice);
+      console.log("extraKm", extraKm);
+      console.log("newPrice", newPrice);
 
       return {
         ...taxi,
@@ -271,137 +272,58 @@ export default function BookingArea() {
     router.push("/taxidetails");
   };
 
-
-
-
-  // Reinitialize autocomplete whenever new extra city inputs are added
+  // Reinitialize autocomplete for extra cities
   useEffect(() => {
     if (!window.google) return;
 
     extraCities.forEach((city) => {
       if (city.ref && !city.autocompleteAttached) {
-        const autocomplete = new window.google.maps.places.Autocomplete(city.ref);
+        const autocomplete = new window.google.maps.places.Autocomplete(
+          city.ref
+        );
         autocomplete.addListener("place_changed", () => {
           const place = autocomplete.getPlace();
-          // Optionally handle extra city place selection
         });
-
-        city.autocompleteAttached = true; // Prevent duplicate attaching
+        city.autocompleteAttached = true;
       }
     });
   }, [extraCities]);
 
   const canAddCity = isFromFilled && isToFilled;
 
+  const handleResendOtp = () => {
+    if (!canResend) return;
+
+    setOtp(["", "", "", "", ""]);
+    otpRefs.current[0]?.focus();
+    setOtpVerified(false);
+    setOtpSent(true);
+    handleRegister({ phoneNumber });
+    toast.success(successMsg || "OTP resent successfully!");
+  };
+
+  // Resend timer countdown
+  useEffect(() => {
+    if (!otpSent) return;
+
+    setResendTimer(30);
+    setCanResend(false);
+
+    const interval = setInterval(() => {
+      setResendTimer((prev) => {
+        if (prev <= 1) {
+          clearInterval(interval);
+          setCanResend(true);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [otpSent]);
+
   return (
-    // <div className="booking-area">
-    //   <div className="container">
-    //     <div className="booking-form form-card shadow-lg">
-    //       <div className="form-card-header">
-    //         <h4 className="booking-title">Plan Your Perfect Ride</h4>
-    //         <p className="booking-sub">Fast. Safe. Comfortable — pick a taxi that fits your trip.</p>
-    //       </div>
-
-    //       <form className="booking-grid">
-
-    //         <div className="col-left">
-    //           <div className="trip-picker">
-    //             <label className="input-label">Trip Type</label>
-    //             <div className="trip-pill-group">
-    //               <button
-    //                 type="button"
-    //                 className={`status-pill ${tripType === "One Way" ? "status-pill--active" : "status-pill--inactive"}`}
-    //                 onClick={() => setTripType("One Way")}
-    //               >
-    //                 One Way
-    //               </button>
-    //               <button
-    //                 type="button"
-    //                 className={`status-pill ${tripType === "Round Trip" ? "status-pill--active" : "status-pill--inactive"}`}
-    //                 onClick={() => setTripType("Round Trip")}
-    //               >
-    //                 Round Trip
-    //               </button>
-    //             </div>
-    //           </div>
-    //           <label className="input-label">Pick Up</label>
-    //           <input
-    //             ref={fromInputRef}
-    //             type="text"
-    //             className="form-control input-large"
-    //             placeholder="Where from?"
-    //             onChange={(e) => setIsFromFilled(e.target.value.trim().length > 0)}
-    //           />
-
-    //           <label className="input-label mt-3">Drop Off</label>
-    //           <input
-    //             ref={toInputRef}
-    //             type="text"
-    //             className="form-control input-large"
-    //             placeholder="Where to?"
-    //             onChange={(e) => setIsToFilled(e.target.value.trim().length > 0)}
-    //           />
-
-    //           <div className="mt-3">
-    //             <label className="input-label">Extra Stops</label>
-    //             {extraCities.map((city) => (
-    //               <input
-    //                 key={city.id}
-    //                 ref={(el) => (city.ref = el)}
-    //                 type="text"
-    //                 className="form-control mb-2"
-    //                 placeholder="City name (optional)"
-    //               />
-    //             ))}
-    //             <button type="button" className="btn-add-city" onClick={handleAddCity} disabled={!canAddCity}>
-    //               + Add Stop
-    //             </button>
-    //           </div>
-    //           <label className="input-label mt-3">Phone</label>
-    //           <div className="phone-otp">
-    //             <input
-    //               value={phoneNumber}
-    //               onChange={(e) => setPhoneNumber(e.target.value)}
-    //               type="tel"
-    //               className="form-control input-large"
-    //               placeholder="Mobile Number"
-    //               disabled={otpSent && !otpVerified}
-    //             />
-
-    //           </div>
-
-    //           {otpSent && (
-    //             <div className="otp-verify">
-    //               <input
-    //                 type="text"
-    //                 maxLength={4}
-    //                 className="form-control otp-input"
-    //                 value={otp}
-    //                 onChange={(e) => setOtp(e.target.value)}
-    //                 placeholder="Enter OTP"
-    //               />
-    //               <button type="button" className="theme-btn verify-btn" onClick={handleVerifyOtp}>
-    //                 Verify
-    //               </button>
-    //             </div>
-    //           )}
-    //         </div>
-
-    //       </form>
-    //         <div className="mt-4">
-    //           <button
-    //             className="theme-btn booking-submit"
-    //             type="submit"
-    //             onClick={handleSubmit}
-    //           // disabled={!isAuthenticated && !otpVerified}
-    //           >
-    //             Book Taxi <i className="fas fa-arrow-right"></i>
-    //           </button>
-    //         </div>
-    //     </div>
-    //   </div>
-    // </div>
-
     <div className="booking-area">
       <div className="container">
         <div className="booking-form form-card shadow-lg">
@@ -413,143 +335,121 @@ export default function BookingArea() {
           </div>
 
           <form className="booking-grid">
-
-            {/* ✅ NEW WRAPPER */}
-            <div className="form-inner">
-
-              <div className="col-left">
-                <div className="trip-picker">
-                  <label className="input-label">Trip Type</label>
-                  <div className="trip-pill-group">
-                    <button
-                      type="button"
-                      className={`status-pill ${tripType === "One Way"
-                        ? "status-pill--active"
-                        : "status-pill--inactive"
-                        }`}
-                      onClick={() => setTripType("One Way")}
-                    >
-                      One Way
-                    </button>
-                    <button
-                      type="button"
-                      className={`status-pill ${tripType === "Round Trip"
-                        ? "status-pill--active"
-                        : "status-pill--inactive"
-                        }`}
-                      onClick={() => setTripType("Round Trip")}
-                    >
-                      Round Trip
-                    </button>
-                  </div>
-                </div>
-
-                {/* ✅ Pick + Drop side by side */}
-
-                <div className="input-row mt-3">
-                  <div className="input-col">
-                    <label className="input-label">Pick Up</label>
-                    <input
-                      ref={fromInputRef}
-                      type="text"
-                      className="form-control input-large"
-                      placeholder="Where from?"
-                      onChange={(e) =>
-                        setIsFromFilled(e.target.value.trim().length > 0)
-                      }
-                    />
-                  </div>
-
-                  <div className="input-col">
-                    <label className="input-label">Drop Off</label>
-                    <input
-                      ref={toInputRef}
-                      type="text"
-                      className="form-control input-large"
-                      placeholder="Where to?"
-                      onChange={(e) =>
-                        setIsToFilled(e.target.value.trim().length > 0)
-                      }
-                    />
-                  </div>
-                </div>
-
-                <div className="mt-3">
-                  <label className="input-label">Extra Stops</label>
-                  {extraCities.map((city) => (
-                    <input
-                      key={city.id}
-                      ref={(el) => (city.ref = el)}
-                      type="text"
-                      className="form-control mb-2"
-                      placeholder="City name (optional)"
-                    />
-                  ))}
+            <div className="col-left">
+              <div className="trip-picker">
+                <label className="input-label">Trip Type</label>
+                <div className="trip-pill-group">
                   <button
                     type="button"
-                    className="btn-add-city"
-                    onClick={handleAddCity}
-                    disabled={!canAddCity}
+                    className={`status-pill ${
+                      tripType === "One Way"
+                        ? "status-pill--active"
+                        : "status-pill--inactive"
+                    }`}
+                    onClick={() => setTripType("One Way")}
                   >
-                    + Add Stop
+                    One Way
+                  </button>
+                  <button
+                    type="button"
+                    className={`status-pill ${
+                      tripType === "Round Trip"
+                        ? "status-pill--active"
+                        : "status-pill--inactive"
+                    }`}
+                    onClick={() => setTripType("Round Trip")}
+                  >
+                    Round Trip
                   </button>
                 </div>
-                <div className="input-row mt-3">
-                  <div className="input-col">
-                    <label className="input-label mt-3">Phone</label>
-                    <input
-                      value={phoneNumber}
-                      onChange={(e) => setPhoneNumber(e.target.value)}
-                      type="tel"
-                      className="form-control input-large phone-input"
-                      placeholder="Mobile Number"
-                      disabled={otpSent && !otpVerified}
-                    />
-                  </div>
-                  {/* {otpSent && ( */}
-                  <div className="input-col">
-                    <div className="input-row">
-                    <div className="input-col">
-                      <label className="input-label mt-3">OTP</label>
-
-                      <input
-                        type="text"
-                        maxLength={4}
-                        className="form-control "
-                        value={otp}
-                        onChange={(e) => setOtp(e.target.value)}
-                        placeholder="Enter OTP"
-                      />
-                      <label className="input-label mt-3">OTP</label>
-
-                      <input
-                        type="text"
-                        maxLength={4}
-                        className="form-control "
-                        value={otp}
-                        onChange={(e) => setOtp(e.target.value)}
-                        placeholder="Enter OTP"
-                      />
-                    </div>
-
-                    </div>
-
-                    {/* <button
-                      type="button"
-                      className="theme-btn verify-btn"
-                      onClick={handleVerifyOtp}
-                    >
-                      Verify
-                    </button> */}
-                  </div>
-                  {/* )} */}
-                </div>
-
-
               </div>
-            </div>
+              <label className="input-label mt-3">Pick Up</label>
+              <input
+                ref={fromInputRef}
+                type="text"
+                className="form-control input-large"
+                placeholder="Where from?"
+                onChange={(e) =>
+                  setIsFromFilled(e.target.value.trim().length > 0)
+                }
+              />
 
-            {/* ✅ BUTTON INSIDE FORM */}
+              <label className="input-label mt-3">Drop Off</label>
+              <input
+                ref={toInputRef}
+                type="text"
+                className="form-control input-large"
+                placeholder="Where to?"
+                onChange={(e) =>
+                  setIsToFilled(e.target.value.trim().length > 0)
+                }
+              />
+
+              <div className="mt-3">
+                <label className="input-label">Extra Stops</label>
+                {extraCities.map((city) => (
+                  <input
+                    key={city.id}
+                    ref={(el) => (city.ref = el)}
+                    type="text"
+                    className="form-control mb-2"
+                    placeholder="City name (optional)"
+                  />
+                ))}
+                <button
+                  type="button"
+                  className="btn-add-city"
+                  onClick={handleAddCity}
+                  disabled={!canAddCity}
+                >
+                  + Add Stop
+                </button>
+              </div>
+              <label className="input-label mt-3">Phone</label>
+              <div className="phone-otp">
+                <input
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  type="tel"
+                  className="form-control input-large"
+                  placeholder="Mobile Number"
+                  disabled={otpSent && !otpVerified}
+                />
+              </div>
+
+              {otpSent && (
+                <div className="otp">
+                  <div className="otp-verify d-flex">
+                    {[0, 1, 2, 3, 4].map((i) => (
+                      <input
+                        key={i}
+                        ref={(el) => (otpRefs.current[i] = el)}
+                        type="text"
+                        inputMode="numeric"
+                        pattern="[0-9]*"
+                        maxLength={1}
+                        className="otp-input text-center"
+                        value={otp[i]}
+                        onChange={(e) => handleOtpChange(e, i)}
+                        onKeyDown={(e) => handleOtpKeyDown(e, i)}
+                        onPaste={handleOtpPaste}
+                        disabled={otpVerified}
+                      />
+                    ))}
+                  </div>
+                  <button
+                    type="button"
+                    className="resend-btn"
+                    onClick={handleResendOtp}
+                    disabled={!canResend}
+                  >
+                    {canResend ? "Resend OTP" : `Resend in ${resendTimer}s`}
+                  </button>
+                </div>
+              )}
+            </div>
+          </form>
+          <div className="mt-4">
             <button
               className="theme-btn booking-submit"
               type="submit"
@@ -557,11 +457,9 @@ export default function BookingArea() {
             >
               Book Taxi <i className="fas fa-arrow-right"></i>
             </button>
-
-          </form>
+          </div>
         </div>
       </div>
     </div>
-
   );
 }

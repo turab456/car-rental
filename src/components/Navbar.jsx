@@ -12,7 +12,7 @@ import logo from "../assets/logo/logo.png";
 import { useAuthenticate } from "../hooks/useAuthenticate";
 
 export default function Header() {
-  const { isAuthenticated } = useAuthenticate();
+  const { isAuthenticated } = useAuthenticate()||{};
   const dispatch = useDispatch();
   const { userId, isLoading } = useUserId();
   const { data: user } = useSelector((state) => state.user);
@@ -143,7 +143,7 @@ export default function Header() {
 
                 </li>
 
-                <li className="nav-item"><Link className="nav-link" href="/about">About</Link></li>
+                {/* <li className="nav-item"><Link className="nav-link" >About</Link></li> */}
 
                 <li className="nav-item dropdown">
                   <Link className="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">

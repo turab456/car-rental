@@ -19,7 +19,7 @@ const page = () => {
   return (
    <div>
       <HeroSection />
-      <BookingArea />
+      {/* <BookingArea /> */}
       <Aboutus />
       <Services />
       <TaxiArea />

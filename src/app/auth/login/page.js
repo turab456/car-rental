@@ -17,7 +17,7 @@ export default function Login() {
 
   const [otpSent, setOtpSent] = useState(false); // ✅ Track OTP sent state
 
-  const { loading, otpLoading, errorMsg, successMsg, handleLogin, handleRegister } = useAuth();
+  const { loading, otpLoading, errorMsg, successMsg, handleLogin, handleRegister } = useAuth()||{};
 
   const handleChange = (e) => {
     const { name, value } = e.target;

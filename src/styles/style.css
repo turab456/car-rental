@@ -131,6 +131,7 @@ body {
     padding: 0;
     overflow-x: hidden;
     box-sizing: border-box;
+    background-color: white;
 }
 
 body {
@@ -5604,6 +5605,38 @@ social-login {
     margin-top: 10px;
     align-items: center;
 }
+.otp {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+/* Mobile fix */
+@media (max-width: 480px) {
+  .otp {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .resend-btn {
+    margin-top: 6px;
+    font-size: 13px;
+  }
+}
+.resend-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  color: #ffb703;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.resend-btn:disabled {
+  color: #aaa;
+  cursor: not-allowed;
+}
 
 /* Align phone label vertically with the pickup input when trip-picker is in the left column */
 @media (min-width: 992px) {
@@ -5619,13 +5652,33 @@ social-login {
 }
 
 .otp-input {
-    width: 140px;
-    padding: 10px 12px;
-    border-radius: 10px;
-    border: 1px solid #e9e9e9;
-    text-align: center;
+  width: 52px;
+  height: 52px;
+  font-size: 20px;
+  /* color: #000 !important; */
+  background-color: white;
+  border-radius: 10px;
+  text-align: center;
 }
 
+
+.resend-btn{
+font-size: 15px;
+color: var(--theme-color);
+font-weight: lighter;
+}
+
+@media (max-width: 480px) {
+  .otp-verify {
+    justify-content: space-between;
+  }
+
+  .otp-input {
+    width: 22%;
+    height: 48px;
+    font-size: 18px;
+  }
+}
 .verify-btn {
     padding: 10px 14px;
     border-radius: 10px;
