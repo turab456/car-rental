@@ -1,6 +1,5 @@
 import React from 'react';
 import HeroSection from '../../components/Hero';
-import BookingArea from '../../components/Booking';
 import Aboutus from '../../components/Aboutus';
 import Services from '../../components/Services';
 import TaxiArea from '../../components/Taxi';
@@ -19,7 +18,6 @@ const page = () => {
   return (
    <div>
       <HeroSection />
-      {/* <BookingArea /> */}
       <Aboutus />
       <Services />
       <TaxiArea />
@@ -28,7 +26,7 @@ const page = () => {
       <Team/>
       <VideoChoose/>
       <Faq/>
-      <Testimonial/>
+      {/* <Testimonial/> */}
       <Cta/>
       <Blog/>
       <Partner/>
